@@ -1,0 +1,10 @@
+{
+    "name": "moyyf",
+    "version": "0.0.0",
+    "dependencies": {
+        "express": "4.x",
+        "mongoose": "4.x",
+        "wechat": "2.x",
+        "randomstring": "1.x"
+    }
+}
