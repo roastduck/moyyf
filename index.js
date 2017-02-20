@@ -1,3 +1,5 @@
+"use strict"
+
 const express = require('express');
 const wechat = require('wechat');
 const mongoose = require('mongoose');

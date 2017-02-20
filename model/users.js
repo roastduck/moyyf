@@ -1,3 +1,5 @@
+"use strict"
+
 const mongoose = require('mongoose');
 
 module.exports = (function() {
@@ -10,6 +12,8 @@ module.exports = (function() {
         /**
          * stat:
          * index ------> say(whom)
+         *          |
+         *          ---> choose(JSON(whom, yes, no, notSure))
          */
         statParam: { type: String }
     });

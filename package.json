@@ -5,6 +5,8 @@
         "express": "4.x",
         "mongoose": "4.x",
         "wechat": "2.x",
-        "randomstring": "1.x"
+        "randomstring": "1.x",
+        "mongoose-random": "0.1.x",
+        "shuffle-array": "1.x"
     }
 }
