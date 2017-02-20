@@ -4,6 +4,10 @@ const mongoose = require('mongoose');
 const randomstring = require('randomstring');
 
 const config = require('./config.js');
+const model = {
+    mo: require('./model/mo.js')(),
+    users: require('./model/users.js')()
+};
 
 /*
  * connect to db
@@ -32,8 +36,14 @@ app.use(
         appid: config.wechatAppId,
         encodingAESKey: config.wechatAESKey
     }, wechat.text(function(message, req, res, next) {
-        console.log("incoming: " + JSON.stringify(message));
-        res.reply('receive: ' + message.Content);
+        model.users.getUser(message.FromUserName, function(err, user){
+            if (err) {
+                next(err);
+                return;
+            }
+            console.log(JSON.stringify(user));
+            res.reply('receive: ' + message.Content);
+        });
     }))
 );
 
