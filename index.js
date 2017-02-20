@@ -22,15 +22,19 @@ mongoose.connection.once("open", function() {
  */
 const app = express();
 app.use(express.query());
+app.use(function(req, res, next) {
+    console.log('request: ' + JSON.stringify(req.query));
+    next();
+});
 app.use(
     wechat({
         token: config.wechatToken,
         appid: config.wechatAppId,
-        encodingAESKey: randomstring.generate()
-    }, function(req, res, next) {
-        const message = req.weixin;
-        console.log("incoming: " + message);
-    })
+        encodingAESKey: config.wechatAESKey
+    }, wechat.text(function(message, req, res, next) {
+        console.log("incoming: " + JSON.stringify(message));
+        res.reply('receive: ' + message.Content);
+    }))
 );
 
 /*
