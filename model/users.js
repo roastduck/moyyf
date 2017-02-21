@@ -1,6 +1,7 @@
 "use strict"
 
 const mongoose = require('mongoose');
+const findOrCreate = require('mongoose-find-or-create');
 
 module.exports = (function() {
     const schema = new mongoose.Schema({
@@ -34,26 +35,7 @@ module.exports = (function() {
             this.save(callback);
         }
     });
-    schema.static({
-        getUser: function(openId, callback) { /// @param callback: fn(err, user)
-            const users = this;
-            users.findOne({ openId: openId }, function(err, user) {
-                if (err) {
-                    callback(err);
-                    return;
-                }
-                if (user === null)
-                    users.create({ openId: openId }, function(err, user) {
-                        if (err)
-                            callback(err);
-                        else
-                            callback(null, user);
-                    });
-                else
-                    callback(null, user);
-            });
-        }
-    });
+    schema.plugin(findOrCreate);
 
     return mongoose.connection.model("users", schema);
 });

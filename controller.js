@@ -10,7 +10,7 @@ const model = {
 const help = "请输入'mo ' + 拼音首字母缩写，例如'mo yyf'";
 
 module.exports = function(openId, text, callback) { /// @param callback : fn(err, reply)
-    model.users.getUser(openId, function(err, user){
+    model.users.findOrCreate(openId, function(err, user){
         if (err) {
             callback(err);
             return;
@@ -33,15 +33,15 @@ module.exports = function(openId, text, callback) { /// @param callback : fn(err
         };
 
         const tryGotoChoose = function(whom, callback) { /// @param callback : fn(err, yes, no, notSure)
-            model.mo.findRandom({ vote: { $gte: 5 } }).limit(2).exec(function(err, yes) { // TODO: here is wrong
+            model.mo.findRandom({ whom, vote: { $gte: 5 } }).limit(2).exec(function(err, yes) {
                 if (err)
                     callback(err);
                 else
-                    model.mo.findRandom({ vote: { $lte: -5 } }).limit(1).exec(function(err, no) {
+                    model.mo.findRandom({ whom, vote: { $lte: -5 } }).limit(1).exec(function(err, no) {
                         if (err)
                             callback(err);
                         else
-                            model.mo.findRandom({ vote: { $gt: -5, $lt: 5 } }).limit(1).exec(function(err, notSure) {
+                            model.mo.findRandom({ whom, vote: { $gt: -5, $lt: 5 } }).limit(1).exec(function(err, notSure) {
                                 callback(err, yes, no, notSure);
                             });
                     });

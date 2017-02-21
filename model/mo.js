@@ -2,30 +2,26 @@
 
 const mongoose = require('mongoose');
 const mongooseRandom = require('mongoose-random');
+const findOrCreate = require('mongoose-find-or-create');
 
 module.exports = (function() {
     const schema = new mongoose.Schema({
-        content: { type: String, required: true, unique: true },
-        toWhom: { type: [{ whom: { type: String }, vote: { type: Number } }], required: true }
+        content: { type: String, required: true, index: true },
+        whom: { type: String, required: true },
+        vote: { type: Number, required: true, index:true, default: 0 }
     });
+    schema.index({ content: "text", whom: "text" }, { unique: true });
     schema.plugin(mongooseRandom);
+    schema.plugin(findOrCreate);
     schema.static({
         addWeight: function(content, whom, delta, callback) { /// @param callback : fn(err)
-            const mo = this;
-            mo.findOne({ content: content }, function(err, item) {
+            this.findOrCreate({ content, whom }, function(err, items) {
                 if (err) {
                     callback(err);
                     return;
                 }
-                if (item === null)
-                    mo.create({ content: content, toWhom: [{ whom: whom, vote: delta }] }, callback);
-                else {
-                    let obj = undefined;
-                    while ((obj = item.toWhom.find(function(x) { return x.whom == whom; })) === undefined)
-                        item.toWhom.push({ whom: whom, vote: 0 });
-                    obj.vote += delta;
-                    item.save(callback);
-                }
+                item.vote += delta;
+                item.save(callback);
             });
         }
     });
