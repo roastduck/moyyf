@@ -15,7 +15,7 @@ module.exports = (function() {
     schema.plugin(findOrCreate);
     schema.static({
         addWeight: function(content, whom, delta, callback) { /// @param callback : fn(err)
-            this.findOrCreate({ content, whom }, function(err, items) {
+            this.findOrCreate({ content, whom }, function(err, item) {
                 if (err) {
                     callback(err);
                     return;
